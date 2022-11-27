@@ -6,10 +6,34 @@ function CountriesTable(props) {
   const [error, setError] = useState("");
   const [count, setCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [countriesOrdered, setCountriesOrdered] = useState([]);
   const api = `https://random-data-api.com/api/v2/addresses`;
 
-  const requestAPI = async () => {
+  const reOrderCountries = async () => {
+    const countryDetails = [];
+    const orderedCountries = [];
+
+    for (let i = 0; i < countries.length; i++) {
+      try {
+        setIsLoading(true);
+        const res = await axios.get(
+          `https://restcountries.com/v3.1/name/${countries[i]}?fields=population`
+        );
+        const { population } = res.data[0];
+        const c = countries[i];
+        countryDetails.push({ c, population });
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    countryDetails.sort((c1, c2) => c2.population - c1.population);
+    countryDetails.forEach((cntry) => orderedCountries.push(cntry.c));
+    setCountriesOrdered(orderedCountries);
+  };
+
+  const getCountry = async () => {
     let data = [];
     for (let i = 0; i < count; i++) {
       try {
@@ -27,9 +51,12 @@ function CountriesTable(props) {
   };
 
   useEffect(() => {
-    requestAPI();
+    getCountry();
   }, [count]);
 
+  useEffect(() => {
+    reOrderCountries();
+  }, [countries]);
   return (
     <div>
       <div>
@@ -40,10 +67,12 @@ function CountriesTable(props) {
           onChange={(e) => setCount(e.target.value)}
         />
         <div className="flex-col overflow-y-scroll space-y-2">
-          {isLoading === true ? (
-            <div>Loading...</div>
+          {isLoading ? (
+            <div className="text-2xl font-semibold text-center">
+              Waiting....
+            </div>
           ) : (
-            countries.map((country) => {
+            countriesOrdered.map((country) => {
               return <Country country={country} />;
             })
           )}
