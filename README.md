@@ -15,6 +15,8 @@
 >3. After installing npm, run `npm start` to start the development server on your localhost.
 >4. Web page should appear on your brower displaying the web app.
 
-**No need to switch to any branches as no other branches were created nor merged as it seemed as was no need to create a new branches for every functionality.**
+**More details about npm and how to run the web application are provided in the README file inside the `task` directory**
+
+**Note: No need to switch to any branches as no other branches were created nor merged as it seemed as was no need to create a new branches for every functionality.**
 
   
