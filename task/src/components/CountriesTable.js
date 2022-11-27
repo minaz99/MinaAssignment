@@ -35,19 +35,23 @@ function CountriesTable(props) {
 
   const getCountry = async () => {
     let data = [];
-    for (let i = 0; i < count; i++) {
-      try {
-        setIsLoading(true);
-        const res = await axios.get(api);
-        data.push(res.data.country);
-      } catch (err) {
-        console.log(err);
-        setError(err);
-      } finally {
-        setIsLoading(false);
+    if (count < 5 || count > 20) setError("Number must be between 5-20");
+    else {
+      for (let i = 0; i < count; i++) {
+        try {
+          setIsLoading(true);
+          const res = await axios.get(api);
+          data.push(res.data.country);
+          setError("");
+        } catch (err) {
+          console.log(err);
+          setError(err);
+        } finally {
+          setIsLoading(false);
+        }
       }
+      setCountries(data);
     }
-    setCountries(data);
   };
 
   useEffect(() => {
@@ -66,7 +70,13 @@ function CountriesTable(props) {
           className="bg-rose-400 rounded-md p-2 "
           onChange={(e) => setCount(e.target.value)}
         />
+
         <div className="flex-col overflow-y-scroll space-y-2">
+          {error === "" ? (
+            <div />
+          ) : (
+            <div className="text-rose-600 text-xl">{error}</div>
+          )}
           {isLoading ? (
             <div className="text-2xl font-semibold text-center">
               Waiting....
